@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Dementia.unity
     guid: e7a3e36bb8fa4d1449b2b101351b715d
+  - enabled: 1
+    path: Assets/Scenes/Ending.unity
+    guid: e6ef019b9fc214f488949ec5a7050d0c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
