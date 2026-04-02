@@ -42,7 +42,7 @@ public class Decay : MonoBehaviour
         if (forwardMovement)
             decay += forwardMovementDecay * Time.deltaTime;
 
-        ReduceDecay(decay);
+        LoseCognitive(decay);
     }
     public void SetMovingForward(bool movingForward)
     {
@@ -60,25 +60,29 @@ public class Decay : MonoBehaviour
 
     }
 
-    public void ReduceDecay(float restore)
+    public void AddCognitive(float restore)
     {
-        currentDecay = Mathf.Clamp(currentDecay - restore, 0f, maxDecay);
+        currentDecay = Mathf.Clamp(currentDecay + restore, 0f, maxDecay);
+        UpdateUI();
+        }
+
+
+    public void LoseCognitive(float decay)
+    {
+        currentDecay = Mathf.Clamp(currentDecay - decay, 0f, maxDecay);
         UpdateUI();
 
         if (currentDecay <= 0f)
         {
             TriggerEnding();
         }
+    }
+    void TriggerEnding()
+    {
+        if (isEnding)
+            return;
+        isEnding = true;
 
-
-
-        void TriggerEnding()
-        {
-            if (isEnding)
-                return;
-            isEnding = true;
-
-            SceneManager.LoadScene("Ending");
-        }
+        SceneManager.LoadScene("Ending");
     }
 }
