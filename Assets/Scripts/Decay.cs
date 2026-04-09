@@ -70,7 +70,7 @@ public class Decay : MonoBehaviour
         if (isEnding)
             return;
         isEnding = true;
-        SceneManager.LoadScene("Hospital Scene");
+        SceneManager.LoadScene("Ui UX 2");
     }
 
     IEnumerator FadeAndLoad()
