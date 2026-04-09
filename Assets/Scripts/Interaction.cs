@@ -8,7 +8,7 @@ public class Interaction : MonoBehaviour
     public GameObject Panel;
     public TextMeshProUGUI Text;
     public TextMeshProUGUI objectText;
-    public float fadeSpeed = 5f;
+    public float fadeSpeed = 2f;
     private CanvasGroup cGroup;
     private bool shouldShow = false;
     // Update is called once per frame

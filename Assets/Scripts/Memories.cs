@@ -1,8 +1,11 @@
-using UnityEngine;
+using System.Collections;
 using TMPro;
-
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 public class Memories : MonoBehaviour
 {
+    public Volume localVolume;
     public string memoryText = " ";
     public string objectname = " ";
     public string pressE = "Press E to Interact";
@@ -10,11 +13,18 @@ public class Memories : MonoBehaviour
     public GameObject memoryUI;
     public TextMeshProUGUI textMeshProUGUI;
 
+    public float colorDuration = 1.5f;
+    public float fadeDuration = 2.0f;
+
     private bool beenUsed = false;
     private bool playerInRange = false;
+    private Renderer[] renderers;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-
+    void Start()
+    {
+        renderers = GetComponentsInChildren<Renderer>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -25,7 +35,7 @@ public class Memories : MonoBehaviour
             Interact();
     }
 
-    void OnTriggerEnter (Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player"))
             return;
@@ -45,19 +55,44 @@ public class Memories : MonoBehaviour
     {
         beenUsed = true;
         Interaction.Instance.HidePrompt();
-        Decay.Instance.AddCognitive(Decay.Instance.memoryRestore);
+        StartCoroutine(ColorThenFade());
+    }
+    IEnumerator ColorThenFade()
+    {
+        float t = 0f;
+        while (t < colorDuration)
+        {
+            t += Time.deltaTime;
+            localVolume.weight = Mathf.Lerp(0f, 1f, t / colorDuration);
+            yield return null;
+        }
+
 
         if (memoryUI != null && textMeshProUGUI != null)
         {
             textMeshProUGUI.text = memoryText;
             memoryUI.SetActive(true);
-            StartCoroutine(HideMemoryUI());
         }
-    }
 
-    System.Collections.IEnumerator HideMemoryUI()
-    {
-        yield return new WaitForSeconds(4f);
-        memoryUI.SetActive(false);
+        float elapsed = 0f;
+        while (elapsed < 4f)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (memoryUI != null)
+            memoryUI.SetActive(false);
+
+        t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            localVolume.weight = Mathf.Lerp(1f, 0f, t / fadeDuration);
+            yield return null;
+        }
+
+        gameObject.SetActive(false);
     }
-    }
+}
+

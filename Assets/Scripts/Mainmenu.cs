@@ -14,7 +14,7 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("Level 1 Generated"); 
+        SceneManager.LoadScene("Dementia"); 
     }
 
     public void QuitGame()

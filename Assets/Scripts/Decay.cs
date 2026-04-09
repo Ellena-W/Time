@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using System.Collections;
 
 public class Decay : MonoBehaviour
 {
@@ -9,17 +9,14 @@ public class Decay : MonoBehaviour
 
     public float maxDecay = 100f;
     public float currentDecay = 100f;
-    public float passiveDecayRate = 5f;
-    public float forwardMovementDecay = 3f;
-    public float memoryRestore = 20f;
+    public float passiveDecayRate = 1.695f;
 
     public Slider decaySlider;
     public Image sliderFill;
     public Color healthyColor = Color.green;
     public Color dangerColor = Color.red;
-
+    public Image fadeImage;
     private bool isEnding = false;
-    private bool forwardMovement = false;
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -30,6 +27,9 @@ public class Decay : MonoBehaviour
     void Start()
     {
         UpdateUI();
+        if (fadeImage != null)
+            fadeImage.color = new Color(0, 0, 0, 0);
+        StartCoroutine(FadeAndLoad());
     }
 
     void Update()
@@ -39,15 +39,9 @@ public class Decay : MonoBehaviour
 
         float decay = Time.deltaTime * passiveDecayRate;
 
-        if (forwardMovement)
-            decay += forwardMovementDecay * Time.deltaTime;
-
         LoseCognitive(decay);
     }
-    public void SetMovingForward(bool movingForward)
-    {
-        forwardMovement = movingForward;
-    }
+    
     void UpdateUI()
     {
         float ratio = currentDecay / maxDecay;
@@ -59,12 +53,6 @@ public class Decay : MonoBehaviour
             sliderFill.color = Color.Lerp(dangerColor, healthyColor, ratio);
 
     }
-
-    public void AddCognitive(float restore)
-    {
-        currentDecay = Mathf.Clamp(currentDecay + restore, 0f, maxDecay);
-        UpdateUI();
-        }
 
 
     public void LoseCognitive(float decay)
@@ -82,7 +70,18 @@ public class Decay : MonoBehaviour
         if (isEnding)
             return;
         isEnding = true;
+        SceneManager.LoadScene("Hospital Scene");
+    }
 
-        SceneManager.LoadScene("Ending");
+    IEnumerator FadeAndLoad()
+    {
+        float t = 0f;
+        while (t < 59f)
+        {
+            t += Time.deltaTime;
+            if (fadeImage != null)
+                fadeImage.color = new Color(0, 0, 0, Mathf.Clamp01(t / 59f));
+            yield return null;
+        }
     }
 }
